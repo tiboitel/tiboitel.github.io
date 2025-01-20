@@ -1,5 +1,3 @@
-# Timothée Boitelle – Backend Developer | AI Enthusiast
-
 Welcome to my portfolio! This website showcases my skills, experiences, and projects, helping recruiters and potential collaborators discover my work and expertise.
 
 ## 🌟 About Me
@@ -13,7 +11,7 @@ I'm Timothée Boitelle, a backend developer with over 5 years of experience spec
 
 ## 📁 Featured Projects
 Explore some of my notable work:
-!. **[Woody-woodpacker](https://github.com/tiboitel/Woody-woodpacker)**  
+1. **[Woody-woodpacker](https://github.com/tiboitel/Woody-woodpacker)**  
    Binary packer capable of encrypting and generating self-decrypting output.
    - **Tech Stack:** C
    - **Highlights:** Encryption and low-level programming.
