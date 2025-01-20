@@ -1,3 +1,29 @@
-theme: jekyll-theme-minimal
-title: Octocat's homepage
-description: Bookmark this to keep an eye on my project updates!
+# Site Settings
+title: "Timothée Boitelle | Backend Developer"
+description: "Portfolio website showcasing the projects, skills, and experience of Timothée Boitelle, backend specialist and AI enthusiast."
+url: "https://tiboitel.github.io"
+baseurl: "/"
+
+# Theme
+theme: minima
+highlighter: rouge
+
+# Navigation Links
+navbar:
+  - title: "About"
+    url: "#about"
+  - title: "Skills"
+    url: "#skills"
+  - title: "Portfolio"
+    url: "#portfolio"
+  - title: "Contact"
+    url: "#contact"
+
+# Social Links
+github_username: "tiboitel"
+linkedin: "https://www.linkedin.com/in/tiboitel"
+email: "jules.boitelle@gmail.com"
+
+# SEO
+lang: "en"
+google_analytics: "" # Add your Google Analytics tracking ID if needed
