@@ -1049,15 +1049,15 @@ section p {
 }
 
 .icon-github {
-  background-image: url("../images/icons/github.svg");
+  background-image: url("../../images/icons/github.svg");
 }
 
 .icon-codingame {
-  background-image: url("../images/icons/codingame.svg");
+  background-image: url("../../images/icons/codingame.svg");
 }
 
 .icon-linkedin {
-  background-image: url("../images/icons/linkedin.svg");
+  background-image: url("../../images/icons/linkedin.svg");
 }
 
 @media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
