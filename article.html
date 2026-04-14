@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Article — Timothee Boitelle</title>
+  <meta name="author" content="Timothee Boitelle">
+  <meta name="robots" content="index, follow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    /* --- Reset & Base --- */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    ::selection { background: #333; color: #f0f0f0; }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 5rem;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      font-size: 17px;
+      line-height: 1.7;
+      color: #d4d4d4;
+      background: #111;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* --- Scrollbar --- */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #222; }
+    ::-webkit-scrollbar-thumb { background: #444; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #555; }
+    html { scrollbar-width: thin; scrollbar-color: #444 #222; }
+
+    /* --- Skip link --- */
+    .skip-link {
+      position: absolute;
+      top: -100%;
+      left: 1rem;
+      padding: 0.5rem 1rem;
+      background: #e0e0e0;
+      color: #111;
+      font-weight: 600;
+      z-index: 1000;
+      border-radius: 0 0 4px 4px;
+      text-decoration: none;
+    }
+    .skip-link:focus { top: 0; }
+
+    /* --- Canvas background --- */
+    #life {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* --- Nav --- */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 3.2rem;
+      background: rgba(17, 17, 17, 0.85);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid #222;
+      transition: border-color 0.3s;
+    }
+
+    nav.scrolled { border-bottom-color: #333; }
+
+    nav .name {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: #555;
+      letter-spacing: 0.04em;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    nav .name:hover { color: #e0e0e0; }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 2rem;
+    }
+
+    nav ul a {
+      position: relative;
+      color: #555;
+      text-decoration: none;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      font-weight: 400;
+      letter-spacing: 0.06em;
+      transition: color 0.2s;
+    }
+
+    nav ul a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 100%;
+      height: 1px;
+      background: #e0e0e0;
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.25s ease;
+    }
+
+    nav ul a:hover { color: #e0e0e0; }
+    nav ul a:hover::after { transform: scaleX(1); }
+
+    /* --- Main content --- */
+    main {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 7rem 2.5rem 4rem;
+      background: rgba(17, 17, 17, 0.85);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border-left: 1px solid #1a1a1a;
+      border-right: 1px solid #1a1a1a;
+      min-height: 100vh;
+    }
+
+    /* --- Back link --- */
+    .back-link {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: #555;
+      text-decoration: none;
+      margin-bottom: 2rem;
+      transition: color 0.2s;
+      letter-spacing: 0.02em;
+    }
+
+    .back-link:hover { color: #e0e0e0; }
+    .back-link::before { content: '\2190 '; }
+
+    /* --- Article header --- */
+    .article-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 2rem;
+      font-weight: 600;
+      color: #f0f0f0;
+      line-height: 1.2;
+      margin-bottom: 0.4rem;
+    }
+
+    .article-date {
+      display: block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      color: #555;
+      margin-bottom: 2.5rem;
+      letter-spacing: 0.01em;
+    }
+
+    /* --- Article body (rendered Markdown) --- */
+    .article-body h1 {
+      font-size: 1.6rem;
+      font-weight: 600;
+      color: #e0e0e0;
+      margin: 2.5rem 0 1rem;
+      line-height: 1.3;
+    }
+
+    .article-body h2 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid #222;
+    }
+
+    .article-body h3 {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #ccc;
+      margin: 2rem 0 0.8rem;
+    }
+
+    .article-body p {
+      color: #999;
+      margin-bottom: 1.2rem;
+    }
+
+    .article-body a {
+      color: #999;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      transition: color 0.2s;
+    }
+
+    .article-body a:hover { color: #e0e0e0; }
+
+    .article-body strong { color: #ccc; font-weight: 600; }
+
+    .article-body em { font-style: italic; color: #888; }
+
+    .article-body code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.85em;
+      background: #1a1a1a;
+      padding: 0.15em 0.4em;
+      border-radius: 3px;
+      color: #aaa;
+    }
+
+    .article-body pre {
+      background: #0d0d0d;
+      border: 1px solid #1e1e1e;
+      border-radius: 4px;
+      padding: 1.2rem;
+      overflow-x: auto;
+      margin-bottom: 1.5rem;
+    }
+
+    .article-body pre code {
+      background: none;
+      padding: 0;
+      font-size: 0.82rem;
+      line-height: 1.6;
+      color: #888;
+    }
+
+    .article-body ul {
+      list-style: none;
+      margin-bottom: 1.2rem;
+      padding-left: 1.2rem;
+    }
+
+    .article-body ul li {
+      position: relative;
+      color: #999;
+      margin-bottom: 0.4rem;
+    }
+
+    .article-body ul li::before {
+      content: '\2013';
+      position: absolute;
+      left: -1.2rem;
+      color: #444;
+    }
+
+    .article-body hr {
+      border: none;
+      height: 1px;
+      background: #222;
+      margin: 2.5rem 0;
+    }
+
+    .article-body blockquote {
+      border-left: 2px solid #333;
+      padding-left: 1.2rem;
+      margin-bottom: 1.2rem;
+      color: #777;
+      font-style: italic;
+    }
+
+    /* --- Error state --- */
+    .error-msg {
+      color: #555;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+    }
+
+    .error-msg a { color: #777; }
+    .error-msg a:hover { color: #e0e0e0; }
+
+    /* --- Links --- */
+    a {
+      color: #999;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    a:hover, a:focus-visible { color: #e0e0e0; }
+
+    a:focus-visible {
+      outline: 2px solid #555;
+      outline-offset: 2px;
+    }
+
+    /* --- Footer --- */
+    footer {
+      max-width: 640px;
+      margin: 0 auto;
+      padding: 2.5rem 2.5rem;
+      background: rgba(17, 17, 17, 0.85);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      border-left: 1px solid #1a1a1a;
+      border-right: 1px solid #1a1a1a;
+      border-top: 1px solid #1a1a1a;
+    }
+
+    footer p {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.75rem;
+      color: #333;
+    }
+
+    footer .colophon {
+      margin-top: 0.4rem;
+      color: #2a2a2a;
+      font-size: 0.7rem;
+    }
+
+    /* --- Hamburger button (hidden on desktop) --- */
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 6px;
+      z-index: 101;
+      border-radius: 3px;
+      transition: background 0.2s;
+    }
+
+    .menu-toggle:hover { background: rgba(255, 255, 255, 0.04); }
+
+    .menu-toggle:focus-visible {
+      outline: 2px solid #555;
+      outline-offset: 2px;
+    }
+
+    .menu-toggle span {
+      display: block;
+      width: 18px;
+      height: 2px;
+      background: #555;
+      margin: 3px 0;
+      border-radius: 1px;
+      transition: transform 0.25s ease, opacity 0.2s ease, background 0.2s;
+    }
+
+    .menu-toggle:hover span { background: #888; }
+
+    .menu-toggle.active span { background: #888; }
+    .menu-toggle.active:hover span { background: #e0e0e0; }
+
+    .menu-toggle.active span:nth-child(1) {
+      transform: translateY(5px) rotate(45deg);
+    }
+
+    .menu-toggle.active span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .menu-toggle.active span:nth-child(3) {
+      transform: translateY(-5px) rotate(-45deg);
+    }
+
+    /* --- Responsive --- */
+    @media (max-width: 768px) {
+      .menu-toggle { display: block; }
+
+      nav { padding: 0 1rem; }
+
+      nav ul {
+        position: absolute;
+        top: 3.2rem;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        gap: 0;
+        background: rgba(17, 17, 17, 0.92);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border-bottom: 1px solid #222;
+        padding: 0 1.5rem;
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: max-height 0.3s ease, opacity 0.25s ease, padding 0.3s ease;
+      }
+
+      nav.open ul {
+        max-height: 20rem;
+        opacity: 1;
+        padding: 0.6rem 1.5rem;
+      }
+
+      nav ul li {
+        padding: 0;
+        border-bottom: 1px solid #1a1a1a;
+      }
+
+      nav ul li:last-child { border-bottom: none; }
+
+      nav ul a {
+        display: block;
+        font-size: 0.82rem;
+        padding: 0.65rem 0.4rem;
+        border-left: 2px solid transparent;
+        transition: color 0.2s, border-color 0.25s, background 0.2s;
+      }
+
+      nav ul a::after { display: none; }
+
+      nav ul a:hover {
+        color: #e0e0e0;
+        border-left-color: #444;
+        background: rgba(255, 255, 255, 0.02);
+      }
+
+      main { padding: 6rem 1.5rem 3rem; }
+      .article-title { font-size: 1.6rem; }
+    }
+
+    /* --- Reduced motion --- */
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .menu-toggle span { transition: none; }
+      nav ul { transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <a class="skip-link" href="#article">Skip to content</a>
+
+  <canvas id="life" aria-hidden="true"></canvas>
+
+  <nav role="navigation" aria-label="Main navigation">
+    <a href="index.html" class="name">tiboitel</a>
+    <button class="menu-toggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <ul>
+      <li><a href="index.html#about">about</a></li>
+      <li><a href="index.html#experience">experience</a></li>
+      <li><a href="index.html#projects">projects</a></li>
+      <li><a href="index.html#posts">posts</a></li>
+      <li><a href="index.html#contact">contact</a></li>
+    </ul>
+  </nav>
+
+  <main id="article">
+    <a href="index.html#posts" class="back-link">back to posts</a>
+    <article aria-labelledby="article-title">
+      <header>
+        <h1 class="article-title" id="article-title">Loading&hellip;</h1>
+        <time class="article-date" id="article-date" datetime=""></time>
+      </header>
+      <div class="article-body" id="article-body"></div>
+    </article>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 Timothee Boitelle</p>
+    <p class="colophon">Built with vanilla HTML, CSS, and JS. No frameworks were harmed.</p>
+  </footer>
+
+  <script>
+    /* --- Conway's Game of Life background --- */
+    (function () {
+      var canvas = document.getElementById('life');
+      var ctx = canvas.getContext('2d');
+      var cell = 5;
+      var cols, rows, grid, next;
+      var alive = '#1f1f1f';
+      var dead = '#111111';
+      var interval = 100;
+      var last = 0;
+      var paused = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        var newCols = Math.ceil(canvas.width / cell);
+        var newRows = Math.ceil(canvas.height / cell);
+        if (newCols !== cols || newRows !== rows) {
+          cols = newCols;
+          rows = newRows;
+          seed();
+        }
+      }
+
+      function seed() {
+        grid = [];
+        for (var i = 0; i < rows; i++) {
+          grid[i] = [];
+          for (var j = 0; j < cols; j++) {
+            grid[i][j] = Math.random() < 0.15 ? 1 : 0;
+          }
+        }
+      }
+
+      function neighbors(r, c) {
+        var count = 0;
+        for (var dr = -1; dr <= 1; dr++) {
+          for (var dc = -1; dc <= 1; dc++) {
+            if (dr === 0 && dc === 0) continue;
+            var nr = (r + dr + rows) % rows;
+            var nc = (c + dc + cols) % cols;
+            count += grid[nr][nc];
+          }
+        }
+        return count;
+      }
+
+      function step() {
+        next = [];
+        for (var i = 0; i < rows; i++) {
+          next[i] = [];
+          for (var j = 0; j < cols; j++) {
+            var n = neighbors(i, j);
+            if (grid[i][j]) {
+              next[i][j] = (n === 2 || n === 3) ? 1 : 0;
+            } else {
+              next[i][j] = (n === 3) ? 1 : 0;
+            }
+          }
+        }
+        grid = next;
+      }
+
+      function draw() {
+        ctx.fillStyle = dead;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = alive;
+        for (var i = 0; i < rows; i++) {
+          for (var j = 0; j < cols; j++) {
+            if (grid[i][j]) {
+              ctx.fillRect(j * cell, i * cell, cell - 1, cell - 1);
+            }
+          }
+        }
+      }
+
+      function loop(ts) {
+        if (!paused && ts - last > interval) {
+          step();
+          draw();
+          last = ts;
+        }
+        requestAnimationFrame(loop);
+      }
+
+      var pulsar = [
+        [-6,-4],[-6,-3],[-6,-2],[-6,2],[-6,3],[-6,4],
+        [-4,-6],[-4,-1],[-4,1],[-4,6],
+        [-3,-6],[-3,-1],[-3,1],[-3,6],
+        [-2,-6],[-2,-1],[-2,1],[-2,6],
+        [-1,-4],[-1,-3],[-1,-2],[-1,2],[-1,3],[-1,4],
+        [1,-4],[1,-3],[1,-2],[1,2],[1,3],[1,4],
+        [2,-6],[2,-1],[2,1],[2,6],
+        [3,-6],[3,-1],[3,1],[3,6],
+        [4,-6],[4,-1],[4,1],[4,6],
+        [6,-4],[6,-3],[6,-2],[6,2],[6,3],[6,4]
+      ];
+
+      function stampPulsar(cx, cy) {
+        var r = Math.floor(cy / cell);
+        var c = Math.floor(cx / cell);
+        for (var dr = -7; dr <= 7; dr++) {
+          for (var dc = -7; dc <= 7; dc++) {
+            var cr = (r + dr + rows) % rows;
+            var cc = (c + dc + cols) % cols;
+            grid[cr][cc] = 0;
+          }
+        }
+        for (var i = 0; i < pulsar.length; i++) {
+          var nr = (r + pulsar[i][0] + rows) % rows;
+          var nc = (c + pulsar[i][1] + cols) % cols;
+          grid[nr][nc] = 1;
+        }
+        draw();
+      }
+
+      document.addEventListener('click', function (e) {
+        if (e.target.closest('a, button, input, textarea, nav')) return;
+        stampPulsar(e.clientX, e.clientY);
+      });
+
+      resize();
+      draw();
+      window.addEventListener('resize', resize);
+      requestAnimationFrame(loop);
+    })();
+
+    /* --- Nav scroll state --- */
+    (function () {
+      var navEl = document.querySelector('nav');
+      window.addEventListener('scroll', function () {
+        navEl.classList.toggle('scrolled', window.scrollY > 40);
+      }, { passive: true });
+    })();
+
+    /* --- Mobile menu toggle --- */
+    (function () {
+      var btn = document.querySelector('.menu-toggle');
+      var nav = document.querySelector('nav');
+
+      btn.addEventListener('click', function () {
+        var open = nav.classList.toggle('open');
+        btn.classList.toggle('active', open);
+        btn.setAttribute('aria-expanded', open);
+      });
+
+      nav.querySelectorAll('ul a').forEach(function (link) {
+        link.addEventListener('click', function () {
+          nav.classList.remove('open');
+          btn.classList.remove('active');
+          btn.setAttribute('aria-expanded', 'false');
+        });
+      });
+
+      document.addEventListener('click', function (e) {
+        if (!nav.contains(e.target)) {
+          nav.classList.remove('open');
+          btn.classList.remove('active');
+          btn.setAttribute('aria-expanded', 'false');
+        }
+      });
+    })();
+
+    /* --- Minimal Markdown parser --- */
+    function parseMarkdown(md) {
+      var html = '';
+      var lines = md.split('\n');
+      var i = 0;
+      var inList = false;
+
+      while (i < lines.length) {
+        var line = lines[i];
+
+        /* Fenced code block */
+        if (line.match(/^```/)) {
+          if (inList) { html += '</ul>'; inList = false; }
+          var code = '';
+          i++;
+          while (i < lines.length && !lines[i].match(/^```/)) {
+            code += escapeHtml(lines[i]) + '\n';
+            i++;
+          }
+          html += '<pre><code>' + code.replace(/\n$/, '') + '</code></pre>';
+          i++;
+          continue;
+        }
+
+        /* Horizontal rule */
+        if (line.match(/^---+\s*$/)) {
+          if (inList) { html += '</ul>'; inList = false; }
+          html += '<hr>';
+          i++;
+          continue;
+        }
+
+        /* Headings */
+        var headingMatch = line.match(/^(#{1,3})\s+(.+)/);
+        if (headingMatch) {
+          if (inList) { html += '</ul>'; inList = false; }
+          var level = headingMatch[1].length;
+          html += '<h' + level + '>' + inline(headingMatch[2]) + '</h' + level + '>';
+          i++;
+          continue;
+        }
+
+        /* Unordered list */
+        if (line.match(/^[-*]\s+/)) {
+          if (!inList) { html += '<ul>'; inList = true; }
+          html += '<li>' + inline(line.replace(/^[-*]\s+/, '')) + '</li>';
+          i++;
+          continue;
+        }
+
+        /* Empty line */
+        if (line.trim() === '') {
+          if (inList) { html += '</ul>'; inList = false; }
+          i++;
+          continue;
+        }
+
+        /* Paragraph — collect consecutive non-empty lines */
+        if (inList) { html += '</ul>'; inList = false; }
+        var para = '';
+        while (i < lines.length && lines[i].trim() !== '' && !lines[i].match(/^(#{1,3}\s|[-*]\s|```|---+\s*$)/)) {
+          para += (para ? ' ' : '') + lines[i];
+          i++;
+        }
+        html += '<p>' + inline(para) + '</p>';
+      }
+
+      if (inList) html += '</ul>';
+      return html;
+    }
+
+    /* Inline formatting */
+    function inline(text) {
+      /* Links: [text](url) */
+      text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener noreferrer">$1</a>');
+      /* Bold: **text** */
+      text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+      /* Italic: *text* */
+      text = text.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+      /* Inline code: `text` */
+      text = text.replace(/`([^`]+)`/g, '<code>$1</code>');
+      return text;
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    /* --- SEO: inject meta tags dynamically --- */
+    function setMeta(name, content) {
+      var el = document.querySelector('meta[name="' + name + '"]');
+      if (!el) {
+        el = document.createElement('meta');
+        el.setAttribute('name', name);
+        document.head.appendChild(el);
+      }
+      el.setAttribute('content', content);
+    }
+
+    function setOg(property, content) {
+      var el = document.querySelector('meta[property="' + property + '"]');
+      if (!el) {
+        el = document.createElement('meta');
+        el.setAttribute('property', property);
+        document.head.appendChild(el);
+      }
+      el.setAttribute('content', content);
+    }
+
+    function setCanonical(url) {
+      var el = document.querySelector('link[rel="canonical"]');
+      if (!el) {
+        el = document.createElement('link');
+        el.setAttribute('rel', 'canonical');
+        document.head.appendChild(el);
+      }
+      el.setAttribute('href', url);
+    }
+
+    function injectJsonLd(data) {
+      var el = document.createElement('script');
+      el.setAttribute('type', 'application/ld+json');
+      el.textContent = JSON.stringify(data);
+      document.head.appendChild(el);
+    }
+
+    /* --- Load article --- */
+    (function () {
+      var params = new URLSearchParams(window.location.search);
+      var slug = params.get('slug');
+      var baseUrl = 'https://tiboitel.github.io/';
+
+      if (!slug) {
+        showError();
+        return;
+      }
+
+      fetch('articles/' + encodeURIComponent(slug) + '.md')
+        .then(function (res) {
+          if (!res.ok) throw new Error(res.status);
+          return res.text();
+        })
+        .then(function (md) {
+          return fetch('articles/index.json')
+            .then(function (r) { return r.ok ? r.json() : []; })
+            .then(function (articles) {
+              var meta = articles.find(function (a) { return a.slug === slug; });
+              return { md: md, meta: meta };
+            });
+        })
+        .then(function (data) {
+          var titleEl = document.getElementById('article-title');
+          var dateEl = document.getElementById('article-date');
+          var bodyEl = document.getElementById('article-body');
+
+          var title = slug;
+          var description = '';
+          var dateStr = '';
+
+          /* Extract title from first # heading if present */
+          var lines = data.md.split('\n');
+          var bodyMd = data.md;
+          if (lines[0] && lines[0].match(/^#\s+/)) {
+            title = lines[0].replace(/^#\s+/, '');
+            bodyMd = lines.slice(1).join('\n').replace(/^\n+/, '');
+          } else if (data.meta && data.meta.title) {
+            title = data.meta.title;
+          }
+
+          titleEl.textContent = title;
+          document.title = title + ' \u2014 Timothee Boitelle';
+
+          if (data.meta && data.meta.date) {
+            dateStr = data.meta.date;
+            dateEl.setAttribute('datetime', dateStr);
+            dateEl.textContent = dateStr;
+          }
+
+          if (data.meta && data.meta.summary) {
+            description = data.meta.summary;
+          } else {
+            /* Fallback: first non-empty, non-heading paragraph */
+            for (var k = 0; k < lines.length; k++) {
+              var l = lines[k].trim();
+              if (l && !l.match(/^#/) && !l.match(/^[-*]/) && !l.match(/^```/)) {
+                description = l.replace(/\*\*/g, '').replace(/\*/g, '').replace(/`/g, '').substring(0, 160);
+                break;
+              }
+            }
+          }
+
+          /* Inject SEO meta tags */
+          var articleUrl = baseUrl + 'article.html?slug=' + encodeURIComponent(slug);
+
+          setMeta('description', description);
+          setCanonical(articleUrl);
+
+          setOg('og:title', title);
+          setOg('og:description', description);
+          setOg('og:type', 'article');
+          setOg('og:url', articleUrl);
+          setOg('og:site_name', 'Timothee Boitelle');
+          if (dateStr) {
+            setOg('article:published_time', dateStr);
+            setOg('article:author', 'Timothee Boitelle');
+          }
+
+          /* JSON-LD structured data */
+          var jsonLd = {
+            '@context': 'https://schema.org',
+            '@type': 'BlogPosting',
+            'headline': title,
+            'description': description,
+            'url': articleUrl,
+            'author': {
+              '@type': 'Person',
+              'name': 'Timothee Boitelle',
+              'url': baseUrl
+            },
+            'publisher': {
+              '@type': 'Person',
+              'name': 'Timothee Boitelle'
+            },
+            'mainEntityOfPage': {
+              '@type': 'WebPage',
+              '@id': articleUrl
+            }
+          };
+          if (dateStr) jsonLd.datePublished = dateStr;
+
+          injectJsonLd(jsonLd);
+
+          /* Render body */
+          bodyEl.innerHTML = parseMarkdown(bodyMd);
+        })
+        .catch(function () {
+          showError();
+        });
+
+      function showError() {
+        document.getElementById('article-title').textContent = '';
+        document.getElementById('article-body').innerHTML =
+          '<p class="error-msg">Article not found.<br><a href="index.html#posts">\u2190 back to posts</a></p>';
+        document.title = 'Not Found \u2014 Timothee Boitelle';
+        setMeta('robots', 'noindex');
+      }
+    })();
+  </script>
+
+</body>
+</html>

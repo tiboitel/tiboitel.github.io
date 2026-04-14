@@ -1,0 +1,8 @@
+[
+  {
+    "slug": "hello-world",
+    "title": "Building a Portfolio Site with Vanilla HTML, CSS, and Conway's Game of Life",
+    "date": "2025-01-15",
+    "summary": "How I built a minimalist developer portfolio with vanilla HTML, CSS, JS, and a Conway's Game of Life canvas background — no frameworks, no build tools, no dependencies."
+  }
+]
