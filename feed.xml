@@ -1,6 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>Timothee Boitelle — Blog</title>
+  <link href="https://tiboitel.github.io/feed.xml" rel="self" />
   <link href="https://tiboitel.github.io" />
   <id>https://tiboitel.github.io/</id>
   <updated>2025-01-15T00:00:00Z</updated>

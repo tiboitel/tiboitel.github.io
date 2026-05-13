@@ -27,6 +27,7 @@ def build_feed():
 
     feed = ET.Element(f"{{{ns}}}feed")
     ET.SubElement(feed, f"{{{ns}}}title").text = "Timothee Boitelle — Blog"
+    ET.SubElement(feed, f"{{{ns}}}link", href=SITE + "/feed.xml", rel="self")
     ET.SubElement(feed, f"{{{ns}}}link", href=SITE)
     ET.SubElement(feed, f"{{{ns}}}id").text = SITE + "/"
     ET.SubElement(feed, f"{{{ns}}}updated").text = feed_updated

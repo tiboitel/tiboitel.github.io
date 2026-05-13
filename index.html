@@ -300,39 +300,58 @@
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.8rem;
       color: #5a5a5a;
-      margin-bottom: 1.2rem;
+      margin-bottom: 1.4rem;
       letter-spacing: 0.02em;
+    }
+
+    .contact-cta {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      color: #d6d6d6;
+      border: 1px solid #525252;
+      padding: 0.65rem 1.8rem;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: color 0.2s, border-color 0.2s, background 0.2s;
+      margin-bottom: 1.8rem;
+    }
+
+    .contact-cta:hover {
+      color: #f5f5f5;
+      border-color: #8c8c8c;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .contact-cta::after {
+      content: ' \2192';
+      display: inline-block;
+      transition: transform 0.2s;
+      font-size: 0.85em;
+    }
+
+    .contact-cta:hover::after {
+      transform: translateX(3px);
     }
 
     .contact-links {
       display: flex;
-      gap: 2rem;
+      gap: 1.6rem;
       flex-wrap: wrap;
       justify-content: center;
     }
 
     .contact-links a {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.85rem;
-      color: #8c8c8c;
-      border-bottom: 1px solid #363636;
-      padding-bottom: 2px;
-      transition: color 0.2s, border-color 0.2s;
+      font-size: 0.82rem;
+      color: #6e6e6e;
+      text-decoration: none;
+      transition: color 0.2s;
     }
 
     .contact-links a:hover {
-      color: #e8e8e8;
-      border-color: #747474;
+      color: #b8b8b8;
     }
-
-    .contact-links a::after {
-      content: ' \2192';
-      opacity: 0;
-      transition: opacity 0.2s;
-      font-size: 0.75em;
-    }
-
-    .contact-links a:hover::after { opacity: 1; }
 
     /* --- Education heading --- */
     .education-heading { margin-top: 3rem; }
@@ -520,7 +539,8 @@
       .subtitle { margin-bottom: 2rem; }
       .entry { padding-left: 1rem; }
       .pillar { padding: 1rem; }
-      .contact-links { gap: 1.4rem; }
+      .contact-links { gap: 1.2rem; }
+      .contact-cta { font-size: 0.82rem; padding: 0.55rem 1.4rem; }
     }
 
     /* --- Reduced motion --- */
@@ -726,14 +746,13 @@
     <section id="contact" aria-labelledby="heading-contact">
       <h2 id="heading-contact">Contact</h2>
       <div class="reveal">
-        <p>Looking for a GenAI architect, systems engineer, or just want to talk shop? Let's connect.</p>
-        <p class="contact-comment">// reach out</p>
+        <p>I'm open to freelance work, collaborations, and interesting conversations.</p>
+        <p class="contact-comment">// say hello</p>
+        <a href="mailto:tiboitel@student.42.fr" class="contact-cta">tiboitel@student.42.fr</a>
         <div class="contact-links">
-          <a href="mailto:tiboitel@student.42.fr">Email</a>
           <a href="https://github.com/tiboitel" target="_blank" rel="noopener noreferrer">GitHub</a>
           <a href="https://fr.linkedin.com/in/timoth%C3%A9e-b-59b51a167" target="_blank" rel="noopener noreferrer">LinkedIn</a>
           <a href="https://www.codingame.com/profile/867f4caf6cc7b94ff76dc070f0b61eb10305793" target="_blank" rel="noopener noreferrer">CodinGame</a>
-          <a href="feed.xml" target="_blank" rel="noopener noreferrer">RSS</a>
         </div>
       </div>
     </section>
