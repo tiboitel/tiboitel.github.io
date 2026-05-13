@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>Timothee Boitelle</title>
+  <subtitle>GenAI Python / Systems Architect — thoughts on software, systems, and building things.</subtitle>
+  <link href="https://tiboitel.github.io/" rel="alternate" type="text/html"/>
+  <link href="https://tiboitel.github.io/feed.xml" rel="self" type="application/atom+xml"/>
+  <id>https://tiboitel.github.io/</id>
+  <updated>2025-01-15T00:00:00Z</updated>
+  <author>
+    <name>Timothee Boitelle</name>
+  </author>
+  <entry>
+    <title>Building a Portfolio Site with Vanilla HTML, CSS, and Conway's Game of Life</title>
+    <link href="https://tiboitel.github.io/article.html?slug=hello-world" rel="alternate" type="text/html"/>
+    <id>https://tiboitel.github.io/article.html?slug=hello-world</id>
+    <published>2025-01-15T00:00:00Z</published>
+    <updated>2025-01-15T00:00:00Z</updated>
+    <summary>How I built a minimalist developer portfolio with vanilla HTML, CSS, JS, and a Conway's Game of Life canvas background — no frameworks, no build tools, no dependencies.</summary>
+  </entry>
+</feed>
