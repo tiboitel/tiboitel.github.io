@@ -1,5 +1,11 @@
 [
   {
+    "slug": "rtx-3060-mtp-benchmark",
+    "title": "Long-Context Local LLM Inference on a 12 GB RTX 3060: Measuring MTP, Prefill, and VRAM at 64k",
+    "date": "2026-01-15",
+    "summary": "An engineering study of a 29B-class Mixture-of-Experts model on a single consumer GPU: measuring MTP speculative decoding, long-context prefill, and memory pressure at 64k context."
+  },
+  {
     "slug": "hello-world",
     "title": "Building a Portfolio Site with Vanilla HTML, CSS, and Conway's Game of Life",
     "date": "2025-01-15",
