@@ -4,11 +4,20 @@
   <link href="https://tiboitel.github.io/feed.xml" rel="self" />
   <link href="https://tiboitel.github.io" />
   <id>https://tiboitel.github.io/</id>
-  <updated>2025-01-15T00:00:00Z</updated>
+  <updated>2026-01-15T00:00:00Z</updated>
   <author>
     <name>Timothee Boitelle</name>
   </author>
   <generator>generate_feed.py</generator>
+  <entry>
+    <title>Long-Context Local LLM Inference on a 12 GB RTX 3060: Measuring MTP, Prefill, and VRAM at 64k</title>
+    <link href="https://tiboitel.github.io/article.html?slug=rtx-3060-mtp-benchmark" />
+    <id>tag:tiboitel.github.io,2026-01-15:/rtx-3060-mtp-benchmark</id>
+    <published>2026-01-15T00:00:00Z</published>
+    <updated>2026-01-15T00:00:00Z</updated>
+    <content type="html">&lt;p&gt;An engineering study of a 29B-class Mixture-of-Experts model on a single consumer GPU: measuring MTP speculative decoding, long-context prefill, and memory pressure at 64k context.&lt;/p&gt;</content>
+    <summary>An engineering study of a 29B-class Mixture-of-Experts model on a single consumer GPU: measuring MTP speculative decoding, long-context prefill, and memory pressure at 64k context.</summary>
+  </entry>
   <entry>
     <title>Building a Portfolio Site with Vanilla HTML, CSS, and Conway's Game of Life</title>
     <link href="https://tiboitel.github.io/article.html?slug=hello-world" />
